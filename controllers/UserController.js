@@ -42,7 +42,7 @@ const UserController = {
                 return res.status(400).send({ message: 'Contraseña o nombre incorrectos' });
             }
             
-            token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+            token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
             if (user.tokens.length > 3) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
@@ -54,6 +54,19 @@ const UserController = {
             res.status(500).send({ error, message: 'Hubo un problema al tratar de hacer el logeo' })
         }
     },
+    async logout(req, res) {
+        try {
+          await User.findByIdAndUpdate(req.user._id, {
+            $pull: { tokens: req.headers.authorization },
+          });
+          res.send({ message: "Desconectado con éxito" });
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({
+            message: "Hubo un problema al intentar conectar al usuario",
+          });
+        }
+      }
 }
 
 module.exports = UserController
