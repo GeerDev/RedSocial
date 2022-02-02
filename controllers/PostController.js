@@ -19,7 +19,16 @@ const PostController = {
           res.status(500).send({ message: 'Ha habido un problema al actualizar el post' })
         }
       },
-    
+    async delete(req, res) {
+        try {
+            const post = await Post.findByIdAndDelete(req.params._id)
+            res.send({ post, message: 'Post eliminado' })
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'Ha habido un problema al eliminar el post' })
+        }
+    },
+
 }
 
 module.exports = PostController
