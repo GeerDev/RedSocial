@@ -1,12 +1,14 @@
 const Post = require('../models/Post.js');
+const User = require('../models/User.js');
 
 const PostController = {
     async create(req,res,next){
         try {
             const post = await Post.create({...req.body, userId: req.user._id })
+            await User.findByIdAndUpdate(req.user._id, { $push: { postsIds: post._id } })
             res.status(201).send(post)
         } catch (error) {
-            error.origin = 'posts';
+            error.origin = 'posts'
             next(error)
         }
     },
@@ -30,7 +32,11 @@ const PostController = {
     },
     async getAll(req, res) {
         try {
+           const { page = 1, limit = 10 } = req.query;
            const posts = await Post.find()
+           .populate("reviews.userId")
+           .limit(limit)
+           .skip((page - 1) * limit);
            res.send(posts)
         } catch (error) {
             console.error(error);
@@ -58,10 +64,20 @@ const PostController = {
             console.log(error)
             res.status(500).send({ message: 'Ha habido un problema al traer el post por título' })
         }
-    }
-
-
-
+    },
+    async insertReview(req, res) {
+        try {
+          const post = await Post.findByIdAndUpdate(
+            req.params._id,
+            { $push: { reviews: { ...req.body, userId: req.user._id } } },
+            { new: true }
+          );
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Ha habido un problema a la hora de crear la review" });
+        }
+      }    
 
 }
 

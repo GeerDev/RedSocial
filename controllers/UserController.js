@@ -66,7 +66,16 @@ const UserController = {
             message: "Hubo un problema al intentar conectar al usuario",
           });
         }
+      },
+    async getInfo(req, res) {
+        try {
+          const user = await User.findById(req.user._id).populate("postsIds");
+          res.send(user);
+        } catch (error) {
+          console.error(error);
+        }
       }
+    
 }
 
 module.exports = UserController

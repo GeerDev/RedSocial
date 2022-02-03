@@ -4,7 +4,6 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const PostSchema = new mongoose.Schema({
     title: {
         type: String,
-        unique: true,
         required: [true, 'El título es obligatorio']
     },
     description: {
@@ -17,7 +16,12 @@ const PostSchema = new mongoose.Schema({
     userId: {
         type: ObjectId,
         ref: 'User'
-    }
+    },
+    reviews: [{
+        userId: { type: ObjectId, ref: 'User' },
+        comment: String,
+        image: String
+    }]
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', PostSchema);

@@ -1,4 +1,3 @@
-//handle email or usename duplicates
 const handleDuplicateKeyError = (err, res) => {
     const field = Object.keys(err.keyValue);
     const error = `${field} debe ser únic@`;
@@ -8,7 +7,7 @@ const handleDuplicateKeyError = (err, res) => {
     let errors = Object.values(err.errors).map(el => el.message);
     if(errors.length > 1) {
         let chain = "";
-        for (let i = 0; i < errors.length; i++) {
+        for (let i = 0; i < errs.length; i++) {
           chain += errors[i] + " || ";
         }
         const string = chain.slice(0, -4);
@@ -19,11 +18,13 @@ const handleDuplicateKeyError = (err, res) => {
  }
 
 const typeError = (err, req, res, next) => {
+    const errOrigin = err.origin
     try {
             if(err.name === 'ValidationError') return err = handleValidationError(err, res);
             if(err.code && err.code == 11000) return err = handleDuplicateKeyError(err, res);
+            
     } catch(err) {
-           res.status(500).send('Un error inesperado ha ocurrido');
+           res.status(500).send('Hubo un problema a la hora de crear un Post');
     }
     }
 
