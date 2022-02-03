@@ -4,6 +4,7 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const PostSchema = new mongoose.Schema({
     title: {
         type: String,
+        unique: true,
         required: [true, 'El título es obligatorio']
     },
     description: {

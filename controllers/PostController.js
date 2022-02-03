@@ -1,16 +1,13 @@
 const Post = require('../models/Post.js');
 
 const PostController = {
-    async create(req,res){
+    async create(req,res,next){
         try {
             const post = await Post.create({...req.body, userId: req.user._id })
             res.status(201).send(post)
         } catch (error) {
-            console.error(error)
-            if(error.errors){
-                res.status(400).send({ msg: error.errors.title.properties.message})
-            }
-            res.status(500).send({ message: 'Ha habido un problema al crear el post' })
+            error.origin = 'posts';
+            next(error)
         }
     },
     async update(req, res) {
