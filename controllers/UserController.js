@@ -73,8 +73,10 @@ const UserController = {
           res.send(user);
         } catch (error) {
           console.error(error);
+          res.status(500).send({ error, message: 'Hubo un problema al tratar de obtener la información del usuario' })
         }
-      }
+      },
+    async follow
     
 }
 

@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema({
 
     tokens: [],
 
-    postsIds: [{ type: ObjectId, ref: 'Post' }]
+    postsIds: [{ type: ObjectId, ref: 'Post' }],
+    likes: [{type: ObjectId, ref: 'Post' }]
 
 }, { timestamps: true });
 

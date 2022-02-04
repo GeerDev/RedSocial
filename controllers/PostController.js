@@ -77,7 +77,62 @@ const PostController = {
           console.error(error);
           res.status(500).send({ message: "Ha habido un problema a la hora de crear la review" });
         }
-      }    
+      },
+    async like(req, res) {
+        try {
+          const found = await Post.findById(req.params._id);
+          if ( !found.likes.includes(req.user._id)) {
+            const post = await Post.findByIdAndUpdate(
+                req.params._id,
+                { $push: { likes: req.user._id } },
+                { new: true }
+              );
+              await User.findByIdAndUpdate(
+                req.user._id,
+                { $push: { likes: req.params._id } },
+                { new: true }
+              );
+              res.send(post);
+          } else {
+            res.status(400).send({ message: "No se puede dar like otra vez" });
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Ha habido un problema a la hora de darle al like" });
+        }
+      },
+      async dislike(req, res) {
+        try {
+            const post = await Post.findByIdAndUpdate(
+                req.params._id,
+                { $pull: { likes: req.user._id } },
+                { new: true }
+              );
+              await User.findByIdAndUpdate(
+                req.user._id,
+                { $pull: { likes: req.params._id } },
+                { new: true }
+              );
+              res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Ha habido un problema a la hora de darle al dislike" });
+        }
+      },
+      async getAllLikeswithUsers(req, res) {
+        try {
+           const { page = 1, limit = 10 } = req.query;
+           const posts = await Post.find()
+           .populate("reviews.userId")
+           .populate("likes")
+           .limit(limit)
+           .skip((page - 1) * limit);
+           res.send(posts)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: 'Ha habido un problema al traer los posts' })
+        }
+    }
 
 }
 

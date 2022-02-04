@@ -6,10 +6,13 @@ const { authentication } = require('../middlewares/authentication');
 
 router.post('/', authentication, PostController.create)
 router.get('/', PostController.getAll)
+router.get('/likes', PostController.getAllLikeswithUsers)
 router.get('/id/:_id', PostController.getById)
 router.get('/title/:title', PostController.getByTitle)
 router.put('/:_id', authentication, PostController.update)
 router.put('/reviews/:_id', authentication, PostController.insertReview)
+router.put('/like/:_id', authentication, PostController.like)
+router.put('/dislike/:_id', authentication, PostController.dislike)
 router.delete('/:_id', authentication, PostController.delete)
 
 
