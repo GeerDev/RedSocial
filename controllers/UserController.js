@@ -76,7 +76,49 @@ const UserController = {
           res.status(500).send({ error, message: 'Hubo un problema al tratar de obtener la información del usuario' })
         }
       },
-    async follow
+    async follow(req, res) {
+        if (req.user._id !== req.params._id){
+            try {
+                const targetUser = await User.findById(req.params._id)
+                const currentUser = await User.findById(req.user._id)
+                if (!currentUser.followings.includes(req.params._id)) {
+                    console.log(currentUser.followings);
+                    await targetUser.updateOne ({ $push: { followers: req.user._id } })
+                    await currentUser.updateOne ({ $push: { followings: req.params._id } })
+                    res.status(200).send({ message: "Usuario seguido con exito" })
+                }
+                else {
+                    res.status(403).send({ message: "¡Ya sigues a este usuario!" })
+                }
+            } catch (error) {
+                res.status(500).send({ message: "Ha habido un problema intentando seguir al usuario" })
+            }
+        }
+        else {
+            res.status(400).send({ message: "No puedes seguirte a ti mismo" })
+        }
+    },
+    async unfollow(req, res) {
+        if (req.user._id !== req.params._id){
+            try {
+                const targetUser = await User.findById(req.params._id)
+                const currentUser = await User.findById(req.user._id)
+                if (currentUser.followings.includes(req.params._id)) {
+                    await targetUser.updateOne ({ $pull: { followers: req.user._id } })
+                    await currentUser.updateOne ({ $pull: { followings: req.params._id } })
+                    res.status(200).send({ message: "Has dejado de seguir al usuario con éxito" })
+                }
+                else {
+                    res.status(403).send({ message: "¡No puedes dejar de seguir si aún no sigues al usuario!" })
+                }
+            } catch (error) {
+                res.status(500).send({ message: "Ha habido un problema al intentar dejar de seguir al usuario" })
+            }
+        }
+        else {
+            res.status(400).send({ message: "No puedes dejar de seguirte a ti mismo" })
+        }
+    }
     
 }
 

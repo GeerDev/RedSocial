@@ -19,9 +19,14 @@ const UserSchema = new mongoose.Schema({
     image: String,
 
     tokens: [],
+    confirmed: Boolean,
+    google: Boolean,
 
     postsIds: [{ type: ObjectId, ref: 'Post' }],
-    likes: [{type: ObjectId, ref: 'Post' }]
+    favorites: [{type: ObjectId, ref: 'Post' }],
+
+    followers: [{ type: ObjectId, ref: 'User' }],
+    followings: [{ type: ObjectId, ref: 'User' }]
 
 }, { timestamps: true });
 

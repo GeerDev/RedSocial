@@ -89,7 +89,7 @@ const PostController = {
               );
               await User.findByIdAndUpdate(
                 req.user._id,
-                { $push: { likes: req.params._id } },
+                { $push: { favorites: req.params._id } },
                 { new: true }
               );
               res.send(post);
@@ -110,7 +110,7 @@ const PostController = {
               );
               await User.findByIdAndUpdate(
                 req.user._id,
-                { $pull: { likes: req.params._id } },
+                { $pull: { favorites: req.params._id } },
                 { new: true }
               );
               res.send(post);
@@ -124,7 +124,7 @@ const PostController = {
            const { page = 1, limit = 10 } = req.query;
            const posts = await Post.find()
            .populate("reviews.userId")
-           .populate("likes")
+           .populate("favorites")
            .limit(limit)
            .skip((page - 1) * limit);
            res.send(posts)
