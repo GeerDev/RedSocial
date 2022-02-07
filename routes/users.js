@@ -8,7 +8,9 @@ router.post('/login', UserController.login);
 router.put('/logout', authentication, UserController.logout);
 router.get('/info', authentication, UserController.getInfoUserPost);
 router.get('/infoFollowers', authentication, UserController.getInfoUserPostFollowers);
-router.put('/follow/:_id', authentication, UserController.follow)
-router.put('/unfollow/:_id', authentication, UserController.unfollow)
+router.get('/:_id', UserController.getById);
+router.get('/name/:name', UserController.getByName);
+router.put('/follow/:_id', authentication, UserController.follow);
+router.put('/unfollow/:_id', authentication, UserController.unfollow);
 
 module.exports = router;

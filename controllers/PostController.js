@@ -123,13 +123,31 @@ const PostController = {
         try {
            const posts = await Post.find()
            .populate("userId", "name")
-           .populate("reviews.userId", "name")
+           .populate("reviews.userId")
            res.send(posts)
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: 'Ha habido un problema al traer los posts' })
         }
-    }
+    },
+    async updateReview(req, res) {
+        try {
+          const review = await Post.findByIdAndUpdate(req.params._id, {reviews: req.body}, { new: true })
+          res.send({ message: "Review actualizada correctamente", review });
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: 'Ha habido un problema al actualizar la review' })
+        }
+      },
+    async deleteReview(req, res) {
+        try {
+            const review = await Post.findByIdAndDelete(req.params._id, {reviews: req.body})
+            res.send({ review, message: 'Review eliminada' })
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: 'Ha habido un problema al eliminar la review' })
+        }
+    },
 
 }
 
