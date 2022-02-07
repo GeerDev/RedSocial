@@ -4,7 +4,7 @@ const User = require('../models/User.js');
 const PostController = {
     async create(req,res,next){
         try {
-            const post = await Post.create({...req.body, userId: req.user._id })
+            const post = await Post.create({...req.body, userId: req.user._id, reviews:  { userId: req.user._id }})
             await User.findByIdAndUpdate(req.user._id, { $push: { postsIds: post._id } })
             res.status(201).send(post)
         } catch (error) {
@@ -119,14 +119,11 @@ const PostController = {
           res.status(500).send({ message: "Ha habido un problema a la hora de darle al dislike" });
         }
       },
-      async getAllLikeswithUsers(req, res) {
+      async getAllLikesWithUsers(req, res) {
         try {
-           const { page = 1, limit = 10 } = req.query;
            const posts = await Post.find()
-           .populate("reviews.userId")
-           .populate("favorites")
-           .limit(limit)
-           .skip((page - 1) * limit);
+           .populate("userId", "name")
+           .populate("reviews.userId", "name")
            res.send(posts)
         } catch (error) {
             console.error(error);

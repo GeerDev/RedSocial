@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId;
-const uniqueValidator = require('mongoose-unique-validator');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -9,7 +8,6 @@ const UserSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,
         required: [true, 'El correo es obligatorio']
     },
     password: {
@@ -30,8 +28,6 @@ const UserSchema = new mongoose.Schema({
     followings: [{ type: ObjectId, ref: 'User' }]
 
 }, { timestamps: true });
-
-UserSchema.plugin(uniqueValidator);
 
 const User = mongoose.model('User', UserSchema);
 

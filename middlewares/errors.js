@@ -1,7 +1,4 @@
  const handleValidationError = (err, res) => {
-     if(err.errors.email && err.errors.email.kind === 'unique'){
-        res.status(400).send({messages: "El correo debe ser único" });
-     }
     let errors = Object.values(err.errors).map(el => el.message);
     if(errors.length > 1) {
         let chain = "";

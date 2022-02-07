@@ -6,7 +6,7 @@ const { authentication } = require('../middlewares/authentication');
 
 router.post('/', authentication, PostController.create)
 router.get('/', PostController.getAll)
-router.get('/likes', PostController.getAllLikeswithUsers)
+router.get('/likes', PostController.getAllLikesWithUsers)
 router.get('/id/:_id', PostController.getById)
 router.get('/title/:title', PostController.getByTitle)
 router.put('/:_id', authentication, PostController.update)

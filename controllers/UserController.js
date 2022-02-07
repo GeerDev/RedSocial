@@ -124,13 +124,36 @@ const UserController = {
         try {
 
           const user = await User.findById(req.user._id)
-            .populate("postsIds", "userId");
-          res.send({user, numbersFollowers: user.followings.length});
+            .populate("postsIds", "userId")
+            .populate("followers", "name")
+          res.send({user, numbersFollowers: user.followers.length});
         } catch (error) {
           console.error(error);
           res.status(500).send({ error, message: 'Hubo un problema al tratar de obtener la información del usuario' })
         }
       },
+    async getById(req, res) {
+        try {
+            const user = await User.findById(req.params._id)
+            res.send(user)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ message: 'Ha habido un problema al traer el usuario por Id' })
+        }
+    },
+    async getByName(req, res) {
+        try {
+            const user = await User.aggregate([{
+                    $match: {
+                        name:req.params.name
+                    }
+                }, ])
+                res.send(user)
+        } catch (error) {
+            console.log(error)
+            res.status(500).send({ message: 'Ha habido un problema al traer el usuario por título' })
+        }
+    },
     
 }
 
