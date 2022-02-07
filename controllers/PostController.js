@@ -1,3 +1,4 @@
+const { config } = require('npm');
 const Post = require('../models/Post.js');
 const User = require('../models/User.js');
 
@@ -150,7 +151,48 @@ const PostController = {
             res.status(500).send({ message: 'Ha habido un problema al eliminar la review' })
         }
     },
-    
+    async likeComment(req, res) {
+        try {
+          const post = await Post.findById(req.params._id);
+          for (const element of post.reviews) {
+              console.log(element);
+              if ((element._id.toString() === req.body._id) && !element.likes.includes(req.user._id)) {
+                    element.likes.push(req.user._id)
+                    await post.save()
+                // Para ver con la Profe
+                //  await post.updateOne(
+                //     { $push: { element : {likes: req.user._id }} },
+                //     { new: true }
+                //   );
+              } else {
+                res.status(400).send({ message: "No se puede dar like otra vez a la review" });
+              }
+          }
+          res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Ha habido un problema a la hora de darle al like a la review" });
+        }
+      },
+      async dislikeComment(req, res) {
+        try {
+            const post = await Post.findById(req.params._id);
+            for (const element of post.reviews) {
+                if ((element._id.toString() === req.body._id) && element.likes.includes(req.user._id)) {
+                    const search = element.likes.indexOf(req.user._id)
+                    element.likes.splice(search, 1)
+                    await post.save()
+                } else {
+                  res.status(400).send({ message: "No se puede dar dislike otra vez a la review" });
+                }
+            }
+            res.send(post);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ message: "Ha habido un problema a la hora de darle al dislike" });
+        }
+      },
+
 
 }
 

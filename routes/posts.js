@@ -15,6 +15,8 @@ router.put('/updateReview/:_id', PostController.updateReview)
 router.put('/deleteReview/:_id', PostController.deleteReview)
 router.put('/like/:_id', authentication, PostController.like)
 router.put('/dislike/:_id', authentication, PostController.dislike)
+router.put('/reviews/likeComment/:_id', authentication, PostController.likeComment)
+router.put('/reviews/dislikeComment/:_id', authentication, PostController.dislikeComment)
 router.delete('/:_id', authentication, PostController.delete)
 
 

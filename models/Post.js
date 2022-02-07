@@ -20,7 +20,8 @@ const PostSchema = new mongoose.Schema({
     reviews: [{
         userId: { type: ObjectId, ref: 'User' },
         comment: String,
-        image: String
+        image: String,
+        likes: [{type: ObjectId, ref: 'User' }]
     }],
     likes: [{type: ObjectId, ref: 'User' }]
 }, { timestamps: true });
