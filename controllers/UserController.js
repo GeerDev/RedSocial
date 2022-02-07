@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const UserController = {
-    async register(req, res) {
+    async register(req, res, next) {
         try {
             if (!req.body.password){
                 return res.status(400).json({msg:'La contraseña es obligatoria'})
@@ -19,8 +19,9 @@ const UserController = {
                 newUser
             });
         } catch (error) {
-            console.error(error);
-            res.status(500).send({ error, message: 'Hubo un problema al tratar de registar' })
+
+            error.origin = 'users'
+            next(error)
         }
     },
     async login(req, res) {

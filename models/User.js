@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId;
+const uniqueValidator = require('mongoose-unique-validator');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -29,6 +30,8 @@ const UserSchema = new mongoose.Schema({
     followings: [{ type: ObjectId, ref: 'User' }]
 
 }, { timestamps: true });
+
+UserSchema.plugin(uniqueValidator);
 
 const User = mongoose.model('User', UserSchema);
 
