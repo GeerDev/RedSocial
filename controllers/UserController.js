@@ -67,22 +67,12 @@ const UserController = {
           });
         }
       },
-    async getInfo(req, res) {
-        try {
-          const user = await User.findById(req.user._id).populate("postsIds");
-          res.send(user);
-        } catch (error) {
-          console.error(error);
-          res.status(500).send({ error, message: 'Hubo un problema al tratar de obtener la información del usuario' })
-        }
-      },
     async follow(req, res) {
         if (req.user._id !== req.params._id){
             try {
                 const targetUser = await User.findById(req.params._id)
                 const currentUser = await User.findById(req.user._id)
                 if (!currentUser.followings.includes(req.params._id)) {
-                    console.log(currentUser.followings);
                     await targetUser.updateOne ({ $push: { followers: req.user._id } })
                     await currentUser.updateOne ({ $push: { followings: req.params._id } })
                     res.status(200).send({ message: "Usuario seguido con exito" })
@@ -118,7 +108,28 @@ const UserController = {
         else {
             res.status(400).send({ message: "No puedes dejar de seguirte a ti mismo" })
         }
-    }
+    },
+    async getInfoUserPost(req, res) {
+        try {
+          const user = await User.findById(req.user._id)
+            .populate("postsIds");
+          res.send(user);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ error, message: 'Hubo un problema al tratar de obtener la información del usuario' })
+        }
+      },
+    async getInfoUserPostFollowers(req, res) {
+        try {
+
+          const user = await User.findById(req.user._id)
+            .populate("postsIds", "userId");
+          res.send({user, numbersFollowers: user.followings.length});
+        } catch (error) {
+          console.error(error);
+          res.status(500).send({ error, message: 'Hubo un problema al tratar de obtener la información del usuario' })
+        }
+      },
     
 }
 
