@@ -141,13 +141,16 @@ const PostController = {
       },
     async deleteReview(req, res) {
         try {
-            const review = await Post.findByIdAndDelete(req.params._id, {reviews: req.body})
-            res.send({ review, message: 'Review eliminada' })
+            const post = await Post.findByIdAndUpdate(req.params._id,  {
+                $pull: { reviews: {_id: req.body._id}},
+              })
+            res.send({ post, message: 'Review eliminada' })
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: 'Ha habido un problema al eliminar la review' })
         }
     },
+    
 
 }
 
