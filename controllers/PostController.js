@@ -35,6 +35,10 @@ const PostController = {
   async delete(req, res) {
     try {
       const post = await Post.findByIdAndDelete(req.params._id);
+      console.log(post);
+      await User.findByIdAndUpdate(post.userId, {
+        $pull: { postsIds: {_id:req.params._id} },
+      })
       res.send({ post, message: "Post eliminado" });
     } catch (error) {
       console.error(error);
