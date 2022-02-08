@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/UserController')
 const { authentication } = require('../middlewares/authentication');
+const { uploadUsersImages } = require('../middlewares/multer')
 
 router.post('/', UserController.register);
+router.put('/:_id', uploadUsersImages.single('imageUser'), UserController.updateUser)
 router.post('/login', UserController.login);
 router.put('/logout', authentication, UserController.logout);
 router.get('/info', authentication, UserController.getInfoUserPost);

@@ -68,6 +68,30 @@ const UserController = {
           });
         }
       },
+    async updateUser(req, res) {
+        try {
+            if (req.body.password) {
+                const { password } = req.body
+
+                const hash = await bcrypt.hash( password, 10)
+
+                const userWithPassword = await User.findByIdAndUpdate(
+                    req.params._id,
+                    { ...req.body, rol: 'user', password: hash },
+                    { new: true }
+                  );
+                return res.send({ message: "Usuario con cambio de contraseña actualizado con éxito", userWithPassword });
+            }
+            const user = await User.findByIdAndUpdate(
+                req.params._id,
+                { ...req.body, rol: 'user' },
+                { new: true }
+              );
+            res.send({ message: "Usuario actualizado con éxito", user });
+        } catch (error) {
+            res.status(500).send({message:"Ha habido un problema al actualizar el usuario"})
+        }
+    },
     async follow(req, res) {
         if (req.user._id !== req.params._id){
             try {

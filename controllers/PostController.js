@@ -5,6 +5,7 @@ const User = require("../models/User.js");
 const PostController = {
   async create(req, res, next) {
     try {
+      req.file ? req.body.image = req.file.filename : req.body.image = ''
       const post = await Post.create({ ...req.body, userId: req.user._id });
       await User.findByIdAndUpdate(req.user._id, {
         $push: { postsIds: post._id },
@@ -17,6 +18,7 @@ const PostController = {
   },
   async update(req, res) {
     try {
+      req.file ? req.body.image = req.file.filename : req.body.image = ''
       const post = await Post.findByIdAndUpdate(
         req.params._id,
         { ...req.body, userId: req.user._id },
@@ -86,6 +88,7 @@ const PostController = {
   },
   async insertReview(req, res) {
     try {
+      req.file ? req.body.image = req.file.filename : req.body.image = ''
       const post = await Post.findByIdAndUpdate(
         req.params._id,
         { $push: { reviews: { ...req.body, userId: req.user._id } } },
@@ -163,6 +166,7 @@ const PostController = {
   },
   async updateReview(req, res) {
     try {
+      req.file ? req.body.image = req.file.filename : req.body.image = ''
       const post = await Post.findByIdAndUpdate(req.params._id, {
         $pull: { reviews: { _id: req.body._id } },
       });
