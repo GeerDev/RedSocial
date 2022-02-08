@@ -19,7 +19,6 @@ const UserSchema = new mongoose.Schema({
 
     tokens: [],
     confirmed: Boolean,
-    google: Boolean,
 
     postsIds: [{ type: ObjectId, ref: 'Post' }],
     favorites: [{type: ObjectId, ref: 'Post' }],
