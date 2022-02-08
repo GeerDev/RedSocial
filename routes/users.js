@@ -14,5 +14,6 @@ router.get('/:_id', UserController.getById);
 router.get('/name/:name', UserController.getByName);
 router.put('/follow/:_id', authentication, UserController.follow);
 router.put('/unfollow/:_id', authentication, UserController.unfollow);
+router.get('/confirm/:emailToken',UserController.confirm)
 
 module.exports = router;

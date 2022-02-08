@@ -1,4 +1,3 @@
-const { config } = require("npm");
 const Post = require("../models/Post.js");
 const User = require("../models/User.js");
 
@@ -179,7 +178,6 @@ const PostController = {
         { $push: { reviews: { ...req.body, userId: post.userId } } },
         { new: true }
       );
-      //   const review = await Post.findByIdAndUpdate(req.params._id, {reviews: {...req.body, userId: req.user._id,_id:req.body._id}}, { new: true })
       res.send({ message: "Review actualizada correctamente", comment });
     } catch (error) {
       console.error(error);
