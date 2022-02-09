@@ -15,5 +15,7 @@ router.get('/name/:name', UserController.getByName);
 router.put('/follow/:_id', authentication, UserController.follow);
 router.put('/unfollow/:_id', authentication, UserController.unfollow);
 router.get('/confirm/:emailToken',UserController.confirm)
+router.get('/recoverPassword/:email',UserController.recoverPassword)
+router.put('/resetPassword/:recoverToken',UserController.resetPassword)
 
 module.exports = router;
