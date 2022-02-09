@@ -21,8 +21,7 @@ const isAuthorPost = async (req, res, next) => {
 const isAuthorComment = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params._id);
-    for (const element of post.reviews) {
-                console.log(element);
+    for (const element of post.comments) {
                 if ((element._id.toString() === req.body._id) && (element.userId.toString() === req.user._id.toString())) {
                    next()
                 } else {

@@ -7,19 +7,22 @@ const { uploadPostsImages, uploadCommentsImages } = require('../middlewares/mult
 
 
 router.post('/', authentication, uploadPostsImages.single('imagePost'), PostController.create)
+
 router.get('/', PostController.getAll)
 router.get('/likes', PostController.getAllLikesWithUsers)
 router.get('/id/:_id', PostController.getById)
 router.get('/title/:title', PostController.getByTitle)
+
 router.put('/:_id', authentication, isAuthorPost, uploadPostsImages.single('imagePost'), PostController.update)
-router.put('/reviews/:_id', authentication, uploadCommentsImages.single('imageComment'), PostController.insertReview)
-router.put('/updateReview/:_id', authentication, isAuthorComment, uploadCommentsImages.single('imageComment'), PostController.updateReview)
-router.put('/deleteReview/:_id', PostController.deleteReview)
+router.put('/comments/:_id', authentication, uploadCommentsImages.single('imageComment'), PostController.insertComment)
+router.put('/updateComment/:_id', authentication, isAuthorComment, uploadCommentsImages.single('imageComment'), PostController.updateComment)
+router.put('/deleteComment/:_id', authentication, isAuthorComment, PostController.deleteComment)
 router.put('/like/:_id', authentication, PostController.like)
 router.put('/dislike/:_id', authentication, PostController.dislike)
-router.put('/reviews/likeComment/:_id', authentication, PostController.likeComment)
-router.put('/reviews/dislikeComment/:_id', authentication, PostController.dislikeComment)
-router.delete('/:_id', authentication, PostController.delete)
+router.put('/comments/likeComment/:_id', authentication, PostController.likeComment)
+router.put('/comments/dislikeComment/:_id', authentication, PostController.dislikeComment)
+
+router.delete('/:_id', authentication, isAuthorPost, PostController.delete)
 
 
 module.exports = router;

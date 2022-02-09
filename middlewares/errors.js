@@ -17,12 +17,11 @@ const typeError = (err, req, res, next) => {
     try {
             if(err.name === 'ValidationError') return err = handleValidationError(err, res);
     } catch(err) {
-        if (errOrigin === 'posts'){
+        if (errOrigin === 'posts') {
             res.status(500).send('Hubo un problema a la hora de crear un Post');
         } else {
             res.status(500).send('Hubo un problema a la hora de crear un Usuario');
-        }
-           
+        }  
     }
     }
 

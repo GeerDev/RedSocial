@@ -34,7 +34,6 @@ const PostController = {
   async delete(req, res) {
     try {
       const post = await Post.findByIdAndDelete(req.params._id);
-      console.log(post);
       await User.findByIdAndUpdate(post.userId, {
         $pull: { postsIds: {_id:req.params._id} },
       })
@@ -50,7 +49,7 @@ const PostController = {
     try {
       const { page = 1, limit = 10 } = req.query;
       const posts = await Post.find()
-        .populate("reviews.userId")
+        .populate("comments.userId")
         .limit(limit)
         .skip((page - 1) * limit);
       res.send(posts);
@@ -83,18 +82,18 @@ const PostController = {
       ]);
       res.send(post);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res
         .status(500)
         .send({ message: "Ha habido un problema al traer el post por título" });
     }
   },
-  async insertReview(req, res) {
+  async insertComment(req, res) {
     try {
       req.file ? req.body.image = req.file.filename : req.body.image = ''
       const post = await Post.findByIdAndUpdate(
         req.params._id,
-        { $push: { reviews: { ...req.body, userId: req.user._id } } },
+        { $push: { comments: { ...req.body, userId: req.user._id } } },
         { new: true }
       );
       res.send(post);
@@ -103,14 +102,14 @@ const PostController = {
       res
         .status(500)
         .send({
-          message: "Ha habido un problema a la hora de crear la review",
+          message: "Ha habido un problema a la hora de crear el comentario",
         });
     }
   },
   async like(req, res) {
     try {
-      const found = await Post.findById(req.params._id);
-      if (!found.likes.includes(req.user._id)) {
+      const existPost = await Post.findById(req.params._id);
+      if (!existPost.likes.includes(req.user._id)) {
         const post = await Post.findByIdAndUpdate(
           req.params._id,
           { $push: { likes: req.user._id } },
@@ -157,8 +156,7 @@ const PostController = {
   async getAllLikesWithUsers(req, res) {
     try {
       const posts = await Post.find()
-        .populate("userId", "name")
-        .populate("reviews.userId");
+        .populate("likes", "name")
       res.send(posts);
     } catch (error) {
       console.error(error);
@@ -167,52 +165,49 @@ const PostController = {
         .send({ message: "Ha habido un problema al traer los posts" });
     }
   },
-  async updateReview(req, res) {
+  async updateComment(req, res) {
     try {
       req.file ? req.body.image = req.file.filename : req.body.image = ''
       const post = await Post.findByIdAndUpdate(req.params._id, {
-        $pull: { reviews: { _id: req.body._id } },
+        $pull: { comments: { _id: req.body._id } },
       });
       const comment = await Post.findByIdAndUpdate(
         post._id,
-        { $push: { reviews: { ...req.body, userId: post.userId } } },
+        { $push: { comments: { ...req.body, userId: post.userId, _id: req.body._id } } },
         { new: true }
       );
-      res.send({ message: "Review actualizada correctamente", comment });
+      res.send({ message: "Comentario actualizado correctamente", comment });
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Ha habido un problema al actualizar la review" });
+        .send({ message: "Ha habido un problema al actualizar el comentario" });
     }
   },
-  async deleteReview(req, res) {
+  async deleteComment(req, res) {
     try {
       const post = await Post.findByIdAndUpdate(req.params._id, {
-        $pull: { reviews: { _id: req.body._id } },
+        $pull: { comments: { _id: req.body._id } },
       });
-      res.send({ post, message: "Review eliminada" });
+      res.send({ post, message: "Comentario eliminado" });
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Ha habido un problema al eliminar la review" });
+        .send({ message: "Ha habido un problema al eliminar el comentario" });
     }
   },
   async likeComment(req, res) {
     try {
       const post = await Post.findById(req.params._id);
-      for (const element of post.reviews) {
-        if (
-          element._id.toString() === req.body._id &&
-          !element.likes.includes(req.user._id)
-        ) {
+      for (const element of post.comments) {
+        if (element._id.toString() === req.body._id && !element.likes.includes(req.user._id)) {
           element.likes.push(req.user._id);
           await post.save();
         } else {
           res
             .status(400)
-            .send({ message: "No se puede dar like otra vez a la review" });
+            .send({ message: "No se puede dar like otra vez a el comentario" });
         }
       }
       res.send(post);
@@ -222,25 +217,22 @@ const PostController = {
         .status(500)
         .send({
           message:
-            "Ha habido un problema a la hora de darle al like a la review",
+            "Ha habido un problema a la hora de darle al like a el comentario",
         });
     }
   },
   async dislikeComment(req, res) {
     try {
       const post = await Post.findById(req.params._id);
-      for (const element of post.reviews) {
-        if (
-          element._id.toString() === req.body._id &&
-          element.likes.includes(req.user._id)
-        ) {
+      for (const element of post.comments) {
+        if (element._id.toString() === req.body._id && element.likes.includes(req.user._id)) {
           const search = element.likes.indexOf(req.user._id);
           element.likes.splice(search, 1);
           await post.save();
         } else {
           res
             .status(400)
-            .send({ message: "No se puede dar dislike otra vez a la review" });
+            .send({ message: "No se puede dar dislike otra vez a el comentario" });
         }
       }
       res.send(post);
@@ -252,7 +244,7 @@ const PostController = {
           message: "Ha habido un problema a la hora de darle al dislike",
         });
     }
-  },
+  }
 };
 
 module.exports = PostController;

@@ -7,7 +7,7 @@ const UserController = {
     async register(req, res, next) {
         try {
             if (!req.body.password){
-                return res.status(400).json({msg:'La contraseña es obligatoria'})
+                return res.status(400).json({ message: 'La contraseña es obligatoria' })
             } 
             const email = req.body.email;
             const user = await User.findOne({ email: email })
@@ -26,19 +26,12 @@ const UserController = {
                 <a href="${url}"> Click para confirmar tu registro</a>
                 `,
             },(error) => {
-                    if (error){
                         res.status(500).send(error.message);
-                    } else {
-                        res.status(200).jsonp(req.body);
-                    }
               });
-        
-
             res.status(201).send({
                 newUser
             });
         } catch (error) {
-
             error.origin = 'users'
             next(error)
         }
@@ -87,32 +80,33 @@ const UserController = {
         } catch (error) {
           console.error(error);
           res.status(500).send({
-            message: "Hubo un problema al intentar conectar al usuario",
+            error, message: "Hubo un problema al intentar conectar al usuario",
           });
         }
       },
     async updateUser(req, res) {
         try {
+            req.file ? req.body.image = req.file.filename : req.body.image = ''
             if (req.body.password) {
                 const { password } = req.body
 
                 const hash = await bcrypt.hash( password, 10)
 
                 const userWithPassword = await User.findByIdAndUpdate(
-                    req.params._id,
+                    req.user._id,
                     { ...req.body, rol: 'user', password: hash },
                     { new: true }
                   );
                 return res.send({ message: "Usuario con cambio de contraseña actualizado con éxito", userWithPassword });
             }
             const user = await User.findByIdAndUpdate(
-                req.params._id,
+                req.user._id,
                 { ...req.body, rol: 'user' },
                 { new: true }
               );
             res.send({ message: "Usuario actualizado con éxito", user });
         } catch (error) {
-            res.status(500).send({message:"Ha habido un problema al actualizar el usuario"})
+            res.status(500).send({error, message:"Ha habido un problema al actualizar el usuario"})
         }
     },
     async follow(req, res) {
@@ -129,7 +123,7 @@ const UserController = {
                     res.status(403).send({ message: "¡Ya sigues a este usuario!" })
                 }
             } catch (error) {
-                res.status(500).send({ message: "Ha habido un problema intentando seguir al usuario" })
+                res.status(500).send({ error, message: "Ha habido un problema intentando seguir al usuario" })
             }
         }
         else {
@@ -150,7 +144,7 @@ const UserController = {
                     res.status(403).send({ message: "¡No puedes dejar de seguir si aún no sigues al usuario!" })
                 }
             } catch (error) {
-                res.status(500).send({ message: "Ha habido un problema al intentar dejar de seguir al usuario" })
+                res.status(500).send({ error, message: "Ha habido un problema al intentar dejar de seguir al usuario" })
             }
         }
         else {
@@ -169,9 +163,8 @@ const UserController = {
       },
     async getInfoUserPostFollowers(req, res) {
         try {
-
           const user = await User.findById(req.user._id)
-            .populate("postsIds", "userId")
+            .populate("postsIds")
             .populate("followers", "name")
           res.send({user, numbersFollowers: user.followers.length});
         } catch (error) {
@@ -185,7 +178,7 @@ const UserController = {
             res.send(user)
         } catch (error) {
             console.error(error);
-            res.status(500).send({ message: 'Ha habido un problema al traer el usuario por Id' })
+            res.status(500).send({ error, message: 'Ha habido un problema al traer el usuario por Id' })
         }
     },
     async getByName(req, res) {
@@ -197,14 +190,13 @@ const UserController = {
                 }, ])
                 res.send(user)
         } catch (error) {
-            console.log(error)
-            res.status(500).send({ message: 'Ha habido un problema al traer el usuario por título' })
+            console.error(error)
+            res.status(500).send({ error, message: 'Ha habido un problema al traer el usuario por título' })
         }
     },
     async confirm(req,res){
         try {
           const token = req.params.emailToken;
-          console.log(token);
           const payload = jwt.verify(token, process.env.JWT_SECRET)
           const user = await User.findOne({ email: payload.email })
           await user.updateOne({confirmed:true})
@@ -224,6 +216,8 @@ const UserController = {
                     <a href="${url}">Recuperar contraseña</a>
                     El enlace expirará en 48 horas
                     `,
+                },(error) => {
+                        res.status(500).send(error.message);
           });
           res.send({
             message: "Un correo de recuperación se envio a tu dirección de correo",
