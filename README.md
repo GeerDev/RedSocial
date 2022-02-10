@@ -28,19 +28,20 @@ Rellenar las variables necesarias en estos archivos para iniciar el proyecto:
 El sistema ataca a los 2 modelos de los que disponemos en la base de datos:
 
 - Modelo User
-    > Se puede registrar, loguear y desloguear un usuario (Con contraseña encriptada)
-    > Podemos conseguir información de un usuario y también editarlo
-    > Cada usuario puede tener followers y puede seguir a otros usuarios
-    > Nuestro sistema aparte de la validación por correo, permite recuperar la contraseña en caso de olvido
+    - Se puede registrar, loguear y desloguear un usuario (Con contraseña encriptada)
+    - Podemos conseguir información de un usuario y también editarlo
+    - Cada usuario puede tener followers y puede seguir a otros usuarios
+    - Nuestro sistema aparte de la validación por correo, permite recuperar la contraseña en caso de olvido
 
 - Modelo Post, este además cuenta con un array de comentarios dentro de él
-    > Podemos hacer un CRUD completo de los Post 
-    > Podemos hacer un CRUD completo de los comentarios
-    > Se puede dar like y dislike tanto a posts como a comentarios
+    - Podemos hacer un CRUD completo de los Post 
+    - Podemos hacer un CRUD completo de los comentarios
+    - A la hora de traer los posts podemos paginarlos de tal manera que los mostramos por tandas
+    - Se puede dar like y dislike tanto a posts como a comentarios
 
 Se han utilizado middlewares para:
 
-- Autenticación de usuarios
+- Autenticación de usuarios, usando JWT
 - Validación de errores en el registro de usuario y en la creación de posts
 - Autoría a la hora de editar/eliminar posts y comentarios
 - Subida de ficheros con imagenes para el campo de "image" de usuarios,posts y comentarios
