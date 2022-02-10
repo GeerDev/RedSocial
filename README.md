@@ -48,7 +48,9 @@ Se han utilizado middlewares para:
 
 ## Despliegue en Heroku e implemetación de documentación con Swagger
 
-Nuestro back-end se encuentra desplegado en Heroku:
+Nuestro back-end se encuentra desplegado en Heroku en el siguiente enlace:
+
+https://backendredsocial.herokuapp.com/
 
 ![foto](./images_github/Heroku.png) 
 
