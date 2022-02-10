@@ -52,7 +52,7 @@ const PostController = {
         .populate("comments.userId")
         .limit(limit)
         .skip((page - 1) * limit);
-      res.send(posts);
+      res.send({ posts, message: "Aquí tienes todos los posts" });
     } catch (error) {
       console.error(error);
       res

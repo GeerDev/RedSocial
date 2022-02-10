@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const swaggerUI = require('swagger-ui-express')
+const docs = require('./docs/index')
 
 require('dotenv').config()
 
@@ -16,5 +18,7 @@ app.use('/users', require('./routes/users'));
 app.use('/posts', require('./routes/posts'));
 
 app.use(typeError)
+
+app.use('/api-docs', swaggerUI.serve,swaggerUI.setup(docs))
 
 app.listen(PORT, () => console.log(`Servidor levantado en el puerto ${PORT}`))
