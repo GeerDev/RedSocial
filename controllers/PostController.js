@@ -173,7 +173,7 @@ const PostController = {
       });
       const comment = await Post.findByIdAndUpdate(
         post._id,
-        { $push: { comments: { ...req.body, userId: post.userId, _id: req.body._id } } },
+        { $push: { comments: { ...req.body, userId: post.userId} } },
         { new: true }
       );
       res.send({ message: "Comentario actualizado correctamente", comment });
