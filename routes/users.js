@@ -7,7 +7,7 @@ const { uploadUsersImages } = require('../middlewares/multer')
 router.post('/', UserController.register);
 router.post('/login', UserController.login);
 
-router.put('/logout', authentication, UserController.logout);
+router.delete('/logout', authentication, UserController.logout);
 router.put('/', authentication, uploadUsersImages.single('imageUser'), UserController.updateUser);
 router.get('/info', authentication, UserController.getInfoUserPost);
 router.get('/infoFollowers', authentication, UserController.getInfoUserPostFollowers);
