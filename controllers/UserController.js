@@ -39,7 +39,7 @@ const UserController = {
     async login(req, res) {
         try {
             if(!req.body.password || !req.body.email){
-                return res.status(400).json({msg:'Por favor rellene los campos que faltan'})
+                return res.status(400).json({message: 'Por favor rellene los campos que faltan'})
             }
 
             const user = await User.findOne({
