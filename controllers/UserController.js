@@ -64,7 +64,7 @@ const UserController = {
             user.tokens.push(token);
             await user.save();
 
-            res.send({ message: 'Bienvenid@ ' + user.name, token });
+            res.send({ message: 'Bienvenid@ ' + user.name, token, user });
 
         } catch (error) {
             console.error(error);
@@ -183,15 +183,16 @@ const UserController = {
     },
     async getByName(req, res) {
         try {
+            const name = new RegExp(`${req.params.name}`, 'i')
             const user = await User.aggregate([{
                     $match: {
-                        name:req.params.name
+                        name
                     }
                 }, ])
                 res.send(user)
         } catch (error) {
             console.error(error)
-            res.status(500).send({ error, message: 'Ha habido un problema al traer el usuario por título' })
+            res.status(500).send({ error, message: 'Ha habido un problema al traer el usuario por nombre' })
         }
     },
     async confirm(req,res){
